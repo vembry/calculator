@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.androidcalculatro'
+    namespace 'com.example.androidcalculator'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.example.androidcalculatro"
+        applicationId "com.example.androidcalculator"
         minSdk 24
         targetSdk 34
         versionCode 1
