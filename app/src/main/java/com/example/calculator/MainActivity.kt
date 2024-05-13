@@ -147,18 +147,15 @@ fun Calculator() {
         ),
         listOf(
             CalcElement("/", callback = {
-                stack.add(textBoxValue)
-                stack.add("/")
+                stack = safeAddOperator(stack, "/", textBoxValue)
                 textBoxValue = ""
             }),
             CalcElement("x", callback = {
-                stack.add(textBoxValue)
-                stack.add("x")
+                stack = safeAddOperator(stack, "x", textBoxValue)
                 textBoxValue = ""
             }),
             CalcElement("-", callback = {
-                stack.add(textBoxValue)
-                stack.add("-")
+                stack = safeAddOperator(stack, "-", textBoxValue)
                 textBoxValue = ""
             }),
             CalcElement("+", callback = {
