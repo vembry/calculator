@@ -28,6 +28,8 @@ const val CALCULATION_OPERATOR_RESULT = "="
 const val CALCULATION_NEGATES = "+/-"
 const val CALCULATION_PERCENTAGE = "%"
 const val CALCULATION_CLEAR = "CE"
+const val CALCULATION_DECIMAL_LABEL = ","
+const val CALCULATION_DECIMAL_ACTUAL = "."
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -110,6 +112,12 @@ fun findResult(stack: MutableList<String>): Double {
     }
 }
 
+/**
+ * safeAddOperator is to handle edge cases on adding operator gracefully
+ * @param stack contain stack of active elements
+ * @param operatorEntry contain operator to be added
+ * @param numberEntry contain number
+ */
 fun safeAddOperator(
     stack: MutableList<String>,
     operatorEntry: String,
@@ -149,7 +157,11 @@ fun Calculator() {
             CalcElement("8", callback = { textBoxValue += "8" }),
             CalcElement("5", callback = { textBoxValue += "5" }),
             CalcElement("2", callback = { textBoxValue += "2" }),
-            CalcElement(",", callback = { textBoxValue += "." })
+            CalcElement(CALCULATION_DECIMAL_LABEL, callback = {
+                if (!textBoxValue.contains(CALCULATION_DECIMAL_ACTUAL)) {
+                    textBoxValue += CALCULATION_DECIMAL_ACTUAL
+                }
+            })
         ),
         listOf(
             CalcElement(
