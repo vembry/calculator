@@ -36,13 +36,21 @@ class MainActivityTest {
         composeTestRule.onNodeWithTag("txt_calculator").assertTextEquals("9876543210")
     }
 
-    class Calculation(val elements: Array<String>, val result: String)
 
     @Test
     fun doCalculations() {
+        /**
+         * Calculation is a helper class so we just need to define test parameters
+         * instead of having one function for each operations
+         *
+         * @property elements contain all buttons we want to press in array format
+         * @property result contain the expected result of the calculation based on given elements
+         */
+        class Calculation(val elements: Array<String>, val result: String)
+
         // preps
         val operations = arrayOf(
-            // good cases
+            // simple calculation cases
             Calculation(
                 elements = arrayOf("1", CALCULATION_OPERATOR_ADDITION, "2"),
                 result = "3"),
@@ -94,18 +102,42 @@ class MainActivityTest {
                 elements = arrayOf("1", CALCULATION_PERCENTAGE, CALCULATION_OPERATOR_MULTIPLY, "3", CALCULATION_PERCENTAGE),
                 result = "3.0E-4"
             ),
+
+            // decimal cases
             Calculation(
                 elements = arrayOf("1","1",CALCULATION_DECIMAL_LABEL,"1",CALCULATION_DECIMAL_LABEL,"1",CALCULATION_DECIMAL_LABEL, "2", CALCULATION_DECIMAL_LABEL, "3"),
                 result = "11.1123"
+            ),
+            Calculation(
+                elements = arrayOf("1","1",CALCULATION_DECIMAL_LABEL),
+                result = "11"
+            ),
+            Calculation(
+                elements = arrayOf(
+                    "1",
+                    "1",
+                    CALCULATION_DECIMAL_LABEL,
+                    "3",
+                    CALCULATION_OPERATOR_ADDITION,
+                    "1",
+                    CALCULATION_DECIMAL_LABEL,
+                    "1"
+                ),
+                result = "12.4"
             ),
         )
 
         // execs
         for (operation in operations) {
+            // clear out calculator textbox
             composeTestRule.onNodeWithTag("btn_calc_${CALCULATION_CLEAR}").performClick()
+
+            // iteration to press buttons on the calculator
             for (element in operation.elements) {
                 composeTestRule.onNodeWithTag("btn_calc_${element}").performClick()
             }
+
+            // click result after iterating through all wanted buttons
             composeTestRule.onNodeWithTag("btn_calc_${CALCULATION_OPERATOR_RESULT}").performClick()
 
             // asserts
