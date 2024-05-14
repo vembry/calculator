@@ -16,7 +16,18 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+
+// operator constants
+const val CALCULATION_OPERATOR_DIVISION = "/"
+const val CALCULATION_OPERATOR_MULTIPLY = "x"
+const val CALCULATION_OPERATOR_SUBTRACTION = "-"
+const val CALCULATION_OPERATOR_ADDITION = "+"
+const val CALCULATION_OPERATOR_RESULT = "="
+const val CALCULATION_NEGATES = "+/-"
+const val CALCULATION_PERCENTAGE = "%"
+const val CALCULATION_CLEAR = "CE"
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,6 +40,8 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
+
 
 /**
  * the basis of an element used on calculator app
@@ -111,6 +124,7 @@ fun safeAddOperator(
     return stack
 }
 
+
 @Composable
 fun Calculator() {
     // to assists UI
@@ -122,7 +136,7 @@ fun Calculator() {
     // contains all calculator elements that can be added to 'stack'
     val elements = listOf(
         listOf(
-            CalcElement("CE", callback = { textBoxValue = "" }),
+            CalcElement(CALCULATION_CLEAR, callback = { textBoxValue = "" }),
             CalcElement("7", callback = { textBoxValue += "7" }),
             CalcElement("4", callback = { textBoxValue += "4" }),
             CalcElement("1", callback = { textBoxValue += "1" }),
@@ -130,7 +144,7 @@ fun Calculator() {
         ),
         listOf(
             CalcElement(
-                "+/-",
+                CALCULATION_NEGATES,
                 callback = { textBoxValue = (textBoxValue.toDouble() * -1).toString() }),
             CalcElement("8", callback = { textBoxValue += "8" }),
             CalcElement("5", callback = { textBoxValue += "5" }),
@@ -139,38 +153,41 @@ fun Calculator() {
         ),
         listOf(
             CalcElement(
-                "%",
+                CALCULATION_PERCENTAGE,
                 callback = { textBoxValue = (textBoxValue.toDouble() / 100).toString() }),
             CalcElement("9", callback = { textBoxValue += "9" }),
             CalcElement("6", callback = { textBoxValue += "6" }),
             CalcElement("3", callback = { textBoxValue += "3" })
         ),
         listOf(
-            CalcElement("/", callback = {
-                stack = safeAddOperator(stack, "/", textBoxValue)
+            CalcElement(CALCULATION_OPERATOR_DIVISION, callback = {
+                stack = safeAddOperator(stack, CALCULATION_OPERATOR_DIVISION, textBoxValue)
                 textBoxValue = ""
             }),
-            CalcElement("x", callback = {
-                stack = safeAddOperator(stack, "x", textBoxValue)
+            CalcElement(CALCULATION_OPERATOR_MULTIPLY, callback = {
+                stack = safeAddOperator(stack, CALCULATION_OPERATOR_MULTIPLY, textBoxValue)
                 textBoxValue = ""
             }),
-            CalcElement("-", callback = {
-                stack = safeAddOperator(stack, "-", textBoxValue)
+            CalcElement(CALCULATION_OPERATOR_SUBTRACTION, callback = {
+                stack = safeAddOperator(stack, CALCULATION_OPERATOR_SUBTRACTION, textBoxValue)
                 textBoxValue = ""
             }),
-            CalcElement("+", callback = {
-                stack = safeAddOperator(stack, "+", textBoxValue)
+            CalcElement(CALCULATION_OPERATOR_ADDITION, callback = {
+                stack = safeAddOperator(stack, CALCULATION_OPERATOR_ADDITION, textBoxValue)
                 textBoxValue = ""
             }),
-            CalcElement("=", callback = {
+            CalcElement(CALCULATION_OPERATOR_RESULT, callback = {
                 if (textBoxValue.isNotBlank()) {
                     stack.add(textBoxValue)
                     textBoxValue = ""
                 }
 
                 val out = findResult(stack)
+                println("value=$out")
                 textBoxValue = out.toString()
-                if(textBoxValue.contains(".0")){
+
+                // clear out .0 from final number
+                if(textBoxValue.contains(Regex("\\.0$"))){
                     textBoxValue = textBoxValue.substring(0, textBoxValue.length-2)
                 }
 
@@ -201,6 +218,7 @@ fun Calculator() {
                     },
                     modifier = Modifier
                         .fillMaxWidth()
+                        .testTag("txt_calculator")
                 )
             }
         }
@@ -220,7 +238,8 @@ fun Calculator() {
                             onClick = { elementX.callback() },
                             modifier = Modifier
                                 .fillMaxWidth() // Expand the button to fill the available width
-                                .padding(4.dp), // Add padding around the button
+                                .padding(4.dp) // Add padding around the button
+                                .testTag("btn_calc_${elementX.value}"),
                             shape = RoundedCornerShape(10)
                         ) {
                             Text(text = elementX.value)
