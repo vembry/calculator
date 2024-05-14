@@ -1,20 +1,14 @@
 package com.example.calculator
 
-import androidx.compose.ui.semantics.SemanticsNode
-import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performTextInput
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import org.junit.After
-import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.lang.ref.Cleaner
 
 @RunWith(AndroidJUnit4::class)
 class MainActivityTest {
@@ -99,6 +93,10 @@ class MainActivityTest {
             Calculation(
                 elements = arrayOf("1", CALCULATION_PERCENTAGE, CALCULATION_OPERATOR_MULTIPLY, "3", CALCULATION_PERCENTAGE),
                 result = "3.0E-4"
+            ),
+            Calculation(
+                elements = arrayOf("1","1",CALCULATION_DECIMAL_LABEL,"1",CALCULATION_DECIMAL_LABEL,"1",CALCULATION_DECIMAL_LABEL, "2", CALCULATION_DECIMAL_LABEL, "3"),
+                result = "11.1123"
             ),
         )
 
