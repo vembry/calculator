@@ -124,7 +124,13 @@ fun safeAddOperator(
     numberEntry: String
 ): MutableList<String> {
     if(numberEntry.isNotBlank()){
-        stack.add(numberEntry)
+        if(numberEntry.contains(Regex("\\.$"))){
+            // this prevent us saving numbers with trailing decimal
+            // e.g. "3," or "4,". instead we should be expecting "3" or "4"
+            stack.add(numberEntry.substring(0,numberEntry.length-1))
+        } else {
+            stack.add(numberEntry)
+        }
     }
     if(stack.isNotEmpty()){
         stack.add(operatorEntry)
